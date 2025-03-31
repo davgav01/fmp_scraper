@@ -1,0 +1,2 @@
+[console_scripts]
+fmp_scraper = fmp_scraper.cli:main

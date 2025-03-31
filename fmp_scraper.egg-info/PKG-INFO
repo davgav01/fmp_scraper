@@ -1,0 +1,149 @@
+Metadata-Version: 2.4
+Name: fmp-scraper
+Version: 0.1.0
+Summary: A package for retrieving and storing Financial Modeling Prep data
+Home-page: https://github.com/yourusername/fmp-scraper
+Author: Trading Data Team
+Author-email: tradingdata@example.com
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.26.0
+Requires-Dist: pandas>=1.3.0
+Requires-Dist: pyarrow>=7.0.0
+Requires-Dist: numpy>=1.20.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# FMP Scraper
+
+A Python package for retrieving, storing, and analyzing financial data from Financial Modeling Prep.
+
+## Features
+
+- Fetch historical price data with date range support
+- Fetch intraday price data at various intervals (1min, 5min, 15min, 30min, 1hour, 4hour)
+- Fetch dividend history
+- Fetch cryptocurrency price data
+- Fetch fundamental data (income statement, balance sheet, cash flow)
+- Support for both annual and quarterly financial data
+- Store data in Parquet format for efficient storage and retrieval
+- Load data with flexible filtering and time range options
+- Rate limit handling and optimized API usage
+- Command-line interface for easy data management
+
+## Installation
+
+```bash
+# From PyPI (once published)
+pip install fmp-scraper
+
+# From source
+git clone https://github.com/yourusername/fmp-scraper.git
+cd fmp-scraper
+pip install -e .
+```
+
+## Quick Start
+
+```python
+from fmp_scraper import fetch_data_for_tickers, load_ticker_history
+import datetime
+
+# Fetch data for multiple tickers
+fetch_data_for_tickers(["AAPL", "MSFT", "GOOGL"], api_key="YOUR_API_KEY")
+
+# Fetch data with specific date range
+from_date = "2020-01-01"
+to_date = "2023-12-31"
+fetch_data_for_tickers(
+    ["AAPL", "MSFT"], 
+    api_key="YOUR_API_KEY",
+    from_date=from_date,
+    to_date=to_date,
+    include_intraday=True
+)
+
+# Fetch cryptocurrency data
+fetch_data_for_tickers(["BTCUSD", "ETHUSD"], api_key="YOUR_API_KEY")
+
+# Load data for analysis
+aapl_data = load_ticker_history("AAPL", "~/data/fmp")
+print(aapl_data.head())
+
+# Load with date range
+aapl_data = load_ticker_history(
+    "AAPL", 
+    "~/data/fmp", 
+    start_date=datetime.datetime(2021, 1, 1),
+    end_date=datetime.datetime(2022, 12, 31)
+)
+```
+
+## Command Line Usage
+
+```bash
+# Set your API key in the config
+fmp_scraper config --set api_key YOUR_API_KEY
+
+# Fetch data for specific tickers
+fmp_scraper fetch --tickers AAPL MSFT GOOGL
+
+# Fetch data with specific date range
+fmp_scraper fetch --tickers AAPL MSFT --from-date 2020-01-01 --to-date 2023-12-31
+
+# Fetch data including intraday prices
+fmp_scraper fetch --tickers AAPL --from-date 2023-01-01 --to-date 2023-01-07 --include-intraday
+
+# Fetch cryptocurrency data
+fmp_scraper fetch --tickers BTCUSD ETHUSD --crypto
+
+# Fetch data with dividend history
+fmp_scraper fetch --tickers AAPL MSFT --include-dividends
+
+# Fetch data from a file containing tickers
+fmp_scraper fetch --from-file path/to/tickers.txt
+
+# Show a summary of stored data
+fmp_scraper load --summary
+
+# Load specific data type for a ticker
+fmp_scraper load --ticker-info AAPL --data-type dividends
+```
+
+## Data Types
+
+The package provides access to the following data types:
+
+- `ohlcv`: Daily price data (Open, High, Low, Close, Volume)
+- `intraday`: Intraday price data at various intervals
+- `dividends`: Historical dividend data
+- `income_stmt`: Income statements
+- `balance_sheet`: Balance sheet statements
+- `cash_flow`: Cash flow statements
+- `profile`: Company profile information
+- `earnings`: Earnings data extracted from income statements
+
+## API Key
+
+You need to obtain a free API key from [Financial Modeling Prep](https://financialmodelingprep.com/developer/docs/). The free tier includes limited requests per day but is sufficient for getting started.
+
+## Date Ranges
+
+When using date ranges, format dates as "YYYY-MM-DD". For intraday data, it's recommended to limit your request to 7 days or less to avoid excessive API usage.
+
+## License
+
+MIT 
